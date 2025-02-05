@@ -1,8 +1,7 @@
 #include <math.h>
 #include "raycaster.h"
 #include "graphics.h"
-
-#define FOV (M_PI / 3.0f) // Field of view (60 degrees)
+#include "utils.h"
 
 // Cast rays and render walls
 void cast_rays(uint8_t* buffer, const Level* level, const Player* player) {
@@ -42,10 +41,22 @@ void cast_rays(uint8_t* buffer, const Level* level, const Player* player) {
         int draw_start = -line_height / 2 + SCREEN_HEIGHT / 2;
         int draw_end = line_height / 2 + SCREEN_HEIGHT / 2;
 
+        // Draw walls (red)
         for (int y = draw_start; y < draw_end; y++) {
             if (y >= 0 && y < SCREEN_HEIGHT) {
-                plot_pixel_asm(buffer, x, y, 255); // Bright white color
+                uint8_t shade = (uint8_t)(distance_to_wall * 8); // Shade based on distance
+                plot_pixel_asm(buffer, x, y, 1 + (shade % 31)); // Use shades of red
             }
+        }
+
+        // Draw floor (brown)
+        for (int y = draw_end; y < SCREEN_HEIGHT; y++) {
+            plot_pixel_asm(buffer, x, y, 32 + ((y % 32))); // Use shades of brown
+        }
+
+        // Draw ceiling (blue)
+        for (int y = 0; y < draw_start; y++) {
+            plot_pixel_asm(buffer, x, y, 64 + ((y % 32))); // Use shades of blue
         }
     }
 }

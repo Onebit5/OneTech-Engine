@@ -6,9 +6,7 @@
 #include <stdint.h>
 #include "graphics.h"
 #include "level.h"
-
-#define SCREEN_WIDTH 320
-#define SCREEN_HEIGHT 200
+#include "utils.h"
 
 typedef struct {
     float x, y;  // Position

@@ -66,3 +66,7 @@ GameEngine/.vs/GameEngine/v17/DocumentLayout.json
 *.recipe
 *.log
 *.tlog
+GameEngine/GameEngine/Debug/GameEngine.vcxproj.FileListAbsolute.txt
+*.iobj
+*.ipdb
+GameEngine/GameEngine/Release/GameEngine.vcxproj.FileListAbsolute.txt
