@@ -7,12 +7,10 @@
 #include <windows.h>
 #include "utils.h"
 
-#define MAX_MAP_WIDTH 64
-#define MAX_MAP_HEIGHT 64
-
+// Define a structure to represent a game level
 typedef struct {
-	int width;
-	int height;
+	int width; // Width of the level
+	int height; // Height of the level
 	uint8_t grid[MAX_MAP_HEIGHT][MAX_MAP_WIDTH]; // Map grid (0 = empty, 1 = wall)
 } Level;
 

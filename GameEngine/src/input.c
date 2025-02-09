@@ -6,14 +6,12 @@
 #include "editor.h"
 #include "utils.h"
 
-#define MOVE_STEP .01f
-#define ROTATE_STEP .001f
-
+// Handles player input for movement and rotation
 void handle_input(Player* player, const Level* level) {
     // Movement input
     if (GetAsyncKeyState(VK_UP) & 0x8000) { // Move forward
-        float new_x = player->x - MOVE_STEP * cos(player->angle);
-        float new_y = player->y + MOVE_STEP * sin(player->angle); // Negate Y
+        float new_x = player->x + MOVE_STEP * cos(player->angle);
+        float new_y = player->y + MOVE_STEP * sin(player->angle);
         if (!is_wall(level, new_x, new_y)) {
             player->x = new_x;
             player->y = new_y;
@@ -25,8 +23,8 @@ void handle_input(Player* player, const Level* level) {
     }
 
     if (GetAsyncKeyState(VK_DOWN) & 0x8000) { // Move backward
-        float new_x = player->x + MOVE_STEP * cos(player->angle);
-        float new_y = player->y - MOVE_STEP * sin(player->angle); // Negate Y
+        float new_x = player->x - MOVE_STEP * cos(player->angle);
+        float new_y = player->y - MOVE_STEP * sin(player->angle);
         if (!is_wall(level, new_x, new_y)) {
             player->x = new_x;
             player->y = new_y;
@@ -84,6 +82,7 @@ void handle_input(Player* player, const Level* level) {
     }
 }
 
+// Handles input for the level editor
 void handle_editor_input(Level* level) {
     // Save or load the level
     if (GetAsyncKeyState('S') & 0x8000) {
@@ -98,6 +97,7 @@ void handle_editor_input(Level* level) {
     }
 }
 
+// Handles mouse input for level editing
 void handle_mouse_input(Level* level) {
     POINT mouse_pos;
     GetCursorPos(&mouse_pos);
@@ -110,7 +110,7 @@ void handle_mouse_input(Level* level) {
         if (GetAsyncKeyState(VK_LBUTTON) & 0x8000) { // Left-click to add a wall
             level->grid[grid_y][grid_x] = 1;
         }
-        if (GetAsyncKeyState(VK_RBUTTON) & 0x8000) { // Right-click to add a wall
+        if (GetAsyncKeyState(VK_RBUTTON) & 0x8000) { // Right-click to remove a wall
             level->grid[grid_y][grid_x] = 0;
         }
     }

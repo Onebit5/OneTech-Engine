@@ -4,10 +4,10 @@
 
 // Clear the screen buffer
 void clear_screen(uint8_t* buffer) {
-    memset(buffer, 0, SCREEN_WIDTH * SCREEN_HEIGHT);
+    memset(buffer, 0, SCREEN_WIDTH * SCREEN_HEIGHT); // Set all bytes in the buffer to zero
 }
 
-// Plot a pixel in the screen buffer (optimized with inline assembly)
+// Plot a pixel in the screen buffer
 void plot_pixel_asm(uint8_t* buffer, int x, int y, uint8_t color) {
     if (x >= 0 && x < SCREEN_WIDTH && y >= 0 && y < SCREEN_HEIGHT) {
         __asm {
@@ -28,22 +28,14 @@ void initialize_palette() {
     // Black background
     palette[0] = RGB(0, 0, 0);
 
-    // Walls: Shades of red
-    for (int i = 1; i < 32; i++) {
-        palette[i] = RGB(i * 8, 0, 0); // Dark to bright red
-    }
+    // Walls: blue
+    palette[1] = RGB(0, 0, 255);
 
-    // Floor: Shade of browns
-    for (int i = 32; i < 64; i++) {
-        int intensity = (i - 32) * 8;
-        palette[i] = RGB(intensity, intensity / 2, 0); // Dark to light brown
-    }
+    // Floor: gray
+    palette[2] = RGB(128, 128, 128); 
 
-    // Ceiling: Shades of blue
-    for (int i = 64; i < 96; i++) {
-        int intensity = (i - 64) * 8;
-        palette[i] = RGB(0, 0, intensity); // Dark to light blue
-    }
+    // Ceiling: light gray
+    palette[3] = RGB(192, 192, 192); 
 }
 
 // Render the screen buffer to the window
