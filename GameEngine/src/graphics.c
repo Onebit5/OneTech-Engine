@@ -50,13 +50,21 @@ void render_buffer(HDC hdc, uint8_t* buffer) {
     bmi.bmiHeader.biCompression = BI_RGB;
     bmi.bmiHeader.biClrUsed = 256;
 
+    // Copy the palette into the BITMAPINFO structure
+    for (int i = 0; i < 256; i++) {
+        bmi.bmiColors[i].rgbRed = GetRValue(palette[i]);
+        bmi.bmiColors[i].rgbGreen = GetGValue(palette[i]);
+        bmi.bmiColors[i].rgbBlue = GetBValue(palette[i]);
+        bmi.bmiColors[i].rgbReserved = 0;
+    }
+
     // Draw the buffer to the window
     SetDIBitsToDevice(
         hdc,
         0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, // Destination rectangle
         0, 0, 0, SCREEN_HEIGHT, // Source rectangle
         buffer,
-        (BITMAPINFO*)&bmi,
-        DIB_PAL_COLORS
+        &bmi,
+        DIB_RGB_COLORS // Use RGB colors instead of palette indices
     );
 }

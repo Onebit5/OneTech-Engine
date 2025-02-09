@@ -72,11 +72,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
         clear_screen(screen_buffer);
 
-        for (int x = 0; x < SCREEN_WIDTH; x++) {
-            int y = x * SCREEN_HEIGHT / SCREEN_WIDTH;
-            plot_pixel_asm(screen_buffer, x, y, 255); // Bright white color
-        }
-
         if (is_editor_mode()) {
             handle_mouse_input(&level);
             handle_editor_input(&level);
