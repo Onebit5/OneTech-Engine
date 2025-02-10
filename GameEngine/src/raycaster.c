@@ -5,6 +5,12 @@
 
 // Cast rays and render walls
 void cast_rays(uint8_t* buffer, const Level* level, const Player* player) {
+    // Validate input parameters
+    if (!buffer || !level || !level->grid || !player) {
+        printf("Error: Invalid input parameters.\n");
+        return;
+    }
+
     for (int x = 0; x < SCREEN_WIDTH; x++) {
         float camera_x = 2.0f * x / SCREEN_WIDTH - 1.0f;
         float ray_angle = player->angle + FOV * camera_x;
@@ -22,24 +28,30 @@ void cast_rays(uint8_t* buffer, const Level* level, const Player* player) {
             int test_x = (int)test_x_f;
             int test_y = (int)test_y_f;
 
-            if (test_x < 0 || test_x >= level->width || test_y < 0 || test_y >= level->height) {
-                hit_wall = 1;
-                distance_to_wall = 16.0f;
+            // Check bounds before accessing level->grid
+            if (test_x >= 0 && test_x < level->width && test_y >= 0 && test_y < level->height) {
+                if (is_wall(level, test_x, test_y)) {
+                    hit_wall = 1;
+                }
             }
-            else if (is_wall(level, test_x, test_y)) {
-                hit_wall = 1;
+            else {
+                hit_wall = 1; // Out of bounds is treated as hitting a wall
+                distance_to_wall = 16.0f;
             }
         }
 
+        // Calculate line height and drawing bounds
         int line_height = (int)(SCREEN_HEIGHT / distance_to_wall);
         int draw_start = -line_height / 2 + SCREEN_HEIGHT / 2;
         int draw_end = line_height / 2 + SCREEN_HEIGHT / 2;
 
+        // Clamp draw_start and draw_end to valid screen coordinates
+        draw_start = max(0, draw_start);
+        draw_end = min(SCREEN_HEIGHT - 1, draw_end);
+
         // Draw walls (blue)
         for (int y = draw_start; y < draw_end; y++) {
-            if (y >= 0 && y < SCREEN_HEIGHT) {
-                plot_pixel_asm(buffer, x, y, 1); // Use index 1 (blue)
-            }
+            plot_pixel_asm(buffer, x, y, 1); // Use index 1 (blue)
         }
 
         // Draw floor (gray)

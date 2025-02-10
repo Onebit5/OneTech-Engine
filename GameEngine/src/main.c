@@ -7,12 +7,11 @@
 #include "input.h"
 #include "level.h"
 #include "raycaster.h"
-#include "editor.h"
 #include "utils.h"
 
 uint8_t screen_buffer[SCREEN_WIDTH * SCREEN_HEIGHT];
 Player player = { 4.5f, 4.5f, (float)(M_PI / 2.0) };
-Level level;
+Level level = { 0 };
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
     // Allocate console for debugging
@@ -72,15 +71,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
         clear_screen(screen_buffer);
 
-        if (is_editor_mode()) {
-            handle_mouse_input(&level);
-            handle_editor_input(&level);
-            render_grid(screen_buffer, &level);
-        }
-        else {
-            handle_input(&player, &level);
-            cast_rays(screen_buffer, &level, &player);
-        }
+        handle_input(&player, &level);
+        cast_rays(screen_buffer, &level, &player);
 
         HDC hdc = GetDC(hwnd);
         render_buffer(hdc, screen_buffer);

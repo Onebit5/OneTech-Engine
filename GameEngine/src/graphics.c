@@ -4,6 +4,11 @@
 
 // Clear the screen buffer
 void clear_screen(uint8_t* buffer) {
+    if (!buffer) {
+        printf("Error: screen_buffer is null.\n");
+        return;
+    }
+
     memset(buffer, 0, SCREEN_WIDTH * SCREEN_HEIGHT); // Set all bytes in the buffer to zero
 }
 

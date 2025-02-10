@@ -3,7 +3,6 @@
 #include <stdio.h>
 #include "input.h"
 #include "level.h"
-#include "editor.h"
 #include "utils.h"
 
 // Handles player input for movement and rotation
@@ -46,6 +45,10 @@ void handle_input(Player* player, const Level* level) {
         else {
             printf("Blocked by a wall\n");
         }
+    } 
+    else if (GetAsyncKeyState(VK_LEFT) & 0x8000) { // Rotate left
+        player->angle -= ROTATE_STEP;
+        printf("Rotated left to angle %.2f\n", player->angle);
     }
 
     if (GetAsyncKeyState(VK_MENU) & 0x8000 && (GetAsyncKeyState(VK_RIGHT) & 0x8000)) { // Strafe right
@@ -59,59 +62,15 @@ void handle_input(Player* player, const Level* level) {
         else {
             printf("Blocked by a wall\n");
         }
-    }
-
-    // Rotation input
-    if (GetAsyncKeyState(VK_LEFT) & 0x8000) { // Rotate left
-        player->angle -= ROTATE_STEP;
-        printf("Rotated left to angle %.2f\n", player->angle);
-    }
-
-    if (GetAsyncKeyState(VK_RIGHT) & 0x8000) { // Rotate right
+    } 
+    else if (GetAsyncKeyState(VK_RIGHT) & 0x8000) { // Rotate right
         player->angle += ROTATE_STEP;
         printf("Rotated right to angle %.2f\n", player->angle);
     }
 
+    
+
     // Normalize angle to [0, 2π]
     if (player->angle < 0) player->angle += 2 * M_PI;
     if (player->angle > 2 * M_PI) player->angle -= 2 * M_PI;
-
-    // Change to editor mode
-    if (GetAsyncKeyState('E') & 0x8000) {
-        toggle_editor_mode();
-    }
-}
-
-// Handles input for the level editor
-void handle_editor_input(Level* level) {
-    // Save or load the level
-    if (GetAsyncKeyState('S') & 0x8000) {
-        save_level(&level, "level.txt");
-    }
-    if (GetAsyncKeyState('L') & 0x8000) {
-        load_level(&level, "level.txt");
-    }
-    // Change to game mode
-    if (GetAsyncKeyState('G') & 0x8000) {
-        toggle_editor_mode();
-    }
-}
-
-// Handles mouse input for level editing
-void handle_mouse_input(Level* level) {
-    POINT mouse_pos;
-    GetCursorPos(&mouse_pos);
-    ScreenToClient(GetForegroundWindow(), &mouse_pos);
-
-    int grid_x = mouse_pos.x / 10; // Convert pixel coordinates to grid coordinates
-    int grid_y = mouse_pos.y / 10;
-
-    if (grid_x >= 0 && grid_x < level->width && grid_y >= 0 && grid_y < level->height) {
-        if (GetAsyncKeyState(VK_LBUTTON) & 0x8000) { // Left-click to add a wall
-            level->grid[grid_y][grid_x] = 1;
-        }
-        if (GetAsyncKeyState(VK_RBUTTON) & 0x8000) { // Right-click to remove a wall
-            level->grid[grid_y][grid_x] = 0;
-        }
-    }
 }
