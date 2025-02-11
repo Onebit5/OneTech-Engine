@@ -41,6 +41,9 @@ void initialize_palette() {
 
     // Ceiling: light gray
     palette[3] = RGB(192, 192, 192); 
+
+    // Doors: red
+    palette[4] = RGB(255, 0, 0);
 }
 
 // Render the screen buffer to the window

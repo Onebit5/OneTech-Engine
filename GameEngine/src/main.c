@@ -10,7 +10,7 @@
 #include "utils.h"
 
 uint8_t screen_buffer[SCREEN_WIDTH * SCREEN_HEIGHT];
-Player player = { 4.5f, 4.5f, (float)(M_PI / 2.0) };
+Player player = { 4.5f, 4.5f, (float)(M_PI / 2.f) };
 Level level = { 0 };
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
@@ -19,6 +19,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     FILE* fp;
     freopen_s(&fp, "CONOUT$", "w", stdout); // Redirect stdout to the console
     freopen_s(&fp, "CONIN$", "r", stdin);  // Redirect stdin to the console
+    freopen_s(&fp, "CONOUT$", "w", stderr); // Redirect stderr to the console
     SetConsoleTitle(L"OneTech Engine Console");
 
     // Console loaded successfully
@@ -28,7 +29,22 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     initialize_palette();
 
     // Load level
-    load_level(&level, "level.txt");
+    if (load_level("level.txt", &level) == 0) {
+        // Successfully loaded the level
+        printf("Level dimensions: %dx%d\n", level.width, level.height);
+
+        // Print the grid
+        for (int y = 0; y < level.height; y++) {
+            for (int x = 0; x < level.width; x++) {
+                printf("%d ", level.grid[y][x]);
+            }
+            printf("\n");
+        }
+    }
+    else {
+        // Handle error
+        fprintf(stderr, "Failed to load level.\n");
+    }
 
     // Register window class
     WNDCLASS wc = { 0 };
@@ -79,5 +95,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         ReleaseDC(hwnd, hdc);
     }
 
+    // Free allocated memory
+    free_level(&level);
     return 0;
 }

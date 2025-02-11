@@ -68,9 +68,25 @@ void handle_input(Player* player, const Level* level) {
         printf("Rotated right to angle %.2f\n", player->angle);
     }
 
-    
+    // Doesn't work yet
+    if (GetAsyncKeyState(VK_SPACE) & 0x8000) {
+        int player_x = (int)(player->x);
+        int player_y = (int)(player->y);
 
-    // Normalize angle to [0, 2π]
+        // Check nearby cells for doors
+        for (int d = 0; d < level->door_count; d++) {
+            Door* door = &level->doors[d];
+            if ((player_x == door->x && abs(player_y - door->y) <= 1) ||
+                (player_y == door->y && abs(player_x - door->x) <= 1)) {
+                // Open the door smoothly
+                if (door->open_pos > -2.f) {
+                    door->open_pos -= .1f; // Adjust speed as needed
+                }
+            }
+        }
+    }
+
+    // Normalize angle to [0, 2π)
     if (player->angle < 0) player->angle += 2 * M_PI;
     if (player->angle > 2 * M_PI) player->angle -= 2 * M_PI;
 }
