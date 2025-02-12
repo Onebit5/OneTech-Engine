@@ -98,7 +98,7 @@ int load_level(const char* filename, Level* level) {
             if (level->grid[y][x] == 2) {
                 level->doors[door_idx].x = x;
                 level->doors[door_idx].y = y;
-                level->doors[door_idx].open_pos = -2.f; // Closed by default
+                level->doors[door_idx].open_pos = -1.7f; // Closed by default
                 door_idx++;
             }
         }
@@ -137,5 +137,13 @@ int is_door(const Level* level, int x, int y) {
     if (x < 0 || x >= level->width || y < 0 || y >= level->height) {
         return 0; // Out of bounds is not a door
     }
-    return level->grid[y][x] == 2; // Return 1 if it's a door
+    if (level->grid[y][x] == 2) {
+        // Find the corresponding door and check its state
+        for (int d = 0; d < level->door_count; d++) {
+            if (level->doors[d].x == x && level->doors[d].y == y) {
+                return level->doors[d].open_pos <= -1.0f; // Only fully closed doors block movement
+            }
+        }
+    }
+    return 0;
 }
