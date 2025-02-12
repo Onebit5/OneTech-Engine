@@ -25,7 +25,7 @@ The engine dynamically allocates memory for the grid and tracks door positions f
 
 ### 2. Player Input  
 
-- Players can navigate the grid using keyboard inputs (e.g., arrow keys or WASD).  
+- Players can navigate the grid using keyboard inputs (arrow keys).  
 - Collision detection ensures players cannot move through walls or closed doors.  
 
 ### 3. Door Animation  
